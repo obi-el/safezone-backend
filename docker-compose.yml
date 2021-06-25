@@ -1,0 +1,17 @@
+version: '3'
+services:
+  database:
+    image: 'mongo'
+    container_name: 'safezone-mongo'
+    ports:
+      - '27017:27017'
+  server:
+    image: 'obinnaelobi/safezone:latest'
+    container_name: 'safezone-server'
+    ports:
+      - '3003:3003'
+    depends_on:
+      - 'database'
+    env_file:
+      - .env
+
