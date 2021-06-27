@@ -15,8 +15,6 @@ https://github.ibm.com/Zhibo-Zhang/SafeZoneApp
 1. [Contributing](#contributing)
 
 
-## Short description
-
 ### What's the problem?
 
 As a result of the COVID-19 virus, people have to take extra steps to mitigate their chances of getting sick. But, in Canada today there is currently no now way to see data on where infected persons have been that is specific enough to help people make decisions on places to go in their day to day lives. 
@@ -25,17 +23,22 @@ As a result of the COVID-19 virus, people have to take extra steps to mitigate t
 
 With contact-tracing we can help slow the spread of the virus by letting people know when they're about to go in areas that has seen high traffic of infected persons as well as enables businesses in those areas to take the necessary precautions. 
 
+
 ### The idea
 
-A crowdsourced heatmap showing areas that have been visited by infected persons. To protect their identities, when users voluntarily submit their location data we do not associate their profiles to the data.
-The app collects user location data locally on users phone with their permission and they have the option to send it to us, we then confirm they have been sick and add their data to our database. This is then pulled by our mobile app instances and compared to other user location data. 
+A heatmap showing areas that have been visited by infected persons. To protect their identities, when users voluntarily submit their location data we do not associate them to their data.
+The app collects user location data locally on users phone with their permission and they have the option to send it to us, we then confirm they have been sick and add their data to our database.
+
+#### Use Cases:
+- Preemptively allow users see what the covid situation looks like around them and plan how they go out, just as they would with checking the weather.
+- Allow users see where they might have gotten exposed to the virus in the past by moving the filters backwards.  
 
 ## Demo video
 
 https://ibm.box.com/s/1b2r1r1l484ivyeioo2qb84po5syxpou
 
 ## The Architecture
-![architecture](https://ibm.box.com/shared/static/c7ofzmidts89pxtcayvk0mvuvctrd8nj.png)
+![architecture](safezone.jpg)
  
 
 ### Server Setup 
@@ -48,12 +51,12 @@ https://ibm.box.com/s/1b2r1r1l484ivyeioo2qb84po5syxpou
 #### To **POST** data:
 **ENDPOINT**: "http://safezone1.fyre.ibm.com:3003/api/location/
 
-**QUERY**:
+**BODY**:
 ```json
 { 
    "locations": [
        { 
-          "visitTime": "<Timestamp>", 
+          "visitTime": "Timestamp", 
           "location": { 
                coordinates: [ "<Longitude>", "<Latitude>"] 
           } 
@@ -68,8 +71,55 @@ https://ibm.box.com/s/1b2r1r1l484ivyeioo2qb84po5syxpou
 
 **QUERY**: 
 ```json
-{ "fromTimestamp": "<Timestamp>", "toTimestamp": "<Timestamp>" }
+{ "fromTimestamp": "Timestamp", "toTimestamp": "Timestamp" }
 ```
+
+
+---------------------------------------
+## :construction_worker: In Progress
+
+### safezone-backend
+
+#### To **GET** location data:
+**ENDPOINT**: "api/location/
+```json
+{ 
+  "fromTimestamp": "Timestamp", 
+  "toTimestamp": "Timestamp", 
+  "bounds": "[[Longitude, Latitude], [Longitude, Latitude], ...]"
+}
+```
+
+#### To **GET** location metadata:
+**ENDPOINT**: "api/location/metadata
+```json
+{ 
+  "fromTimestamp": "Timestamp", 
+  "toTimestamp": "Timestamp", 
+  "proximity":  "[Longitude, Latitude]",
+  "range": "Integer"
+}
+```
+
+### data-ingester
+**ENDPOINT**: "http://safezone1.fyre.ibm.com:3004/api/location/
+
+**BODY**:
+```json
+{ 
+   "locations": [
+       { 
+          "visitTime": "Timestamp", 
+          "location": { 
+               coordinates: [ "<Longitude>", "<Latitude>"] 
+          } 
+       },
+       ...
+    ] 
+}
+```
+
+---------------------------------------
 
 ### Tests
 
